@@ -69,10 +69,10 @@ The defaults in [`profile.yaml`](profile.yaml) are tuned for AutoResearch:
 | Field | Value | Why |
 |---|---|---|
 | `hosting` | `omctalent` | Runs as a platform-internal LangChain ReAct agent. No external process. |
-| `llm_model` | `MiniMax-M2.7` | Long-context, good at academic prose. Swap to any equivalent. |
+| `llm_model` | `openai/gpt-5.5-pro` (via OpenRouter) | Strong at long-form structured academic prose. Swap to any equivalent. |
 | `temperature` | `0.5` | Low enough for consistent traceability, high enough for readable prose. |
 | `skills` | `[paper_writer, citation-management]` | `paper_writer` is the Stage 8 routing key consumed by `pipeline_engine.py`. |
 
 ## License
 
-Apache 2.0 (matching the OneManCompany ecosystem). Add a `LICENSE` file before publishing.
+[Talent Market Attribution License (TMAL) v1.0](LICENSE) — matching the upstream `1mancompany/talent-template` so this talent can be published to Talent Market under compatible terms.
