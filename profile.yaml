@@ -14,17 +14,17 @@ department: Research
 
 # --- Hosting ---------------------------------------------------------------
 # omctalent = platform-internal LangChain ReAct agent (no external process).
-# Matches the existing entry in company/hire_list.json so the HR shortlist
-# flow stays consistent.
 hosting: omctalent
 agent_family: omctalent
 auth_method: api_key
-api_provider: custom
+# OpenRouter — mainstream routing for the openai/* model namespace. Switch to
+# api_provider: openai if you would rather hit the OpenAI endpoint directly.
+api_provider: openrouter
 
 # --- Model -----------------------------------------------------------------
 # Low temperature: academic prose needs to be consistent and traceable, not
 # creative. Bump to 0.7+ only if you want more stylistic variation.
-llm_model: MiniMax-M2.7
+llm_model: openai/gpt-5.5-pro
 temperature: 0.5
 
 # --- Pricing ---------------------------------------------------------------
