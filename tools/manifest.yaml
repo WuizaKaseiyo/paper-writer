@@ -1,0 +1,13 @@
+# Paper Writer uses OMC's built-in BASE_TOOLS (read / write / ls / load_skill /
+# submit_result / dispatch_child / ...) — no custom tools are declared here.
+#
+# If you later want to give this talent extra capabilities (e.g. a LaTeX
+# compiler or BibTeX validator), add an entry like:
+#
+#   tools:
+#     - name: latex_compile
+#       description: Compile LaTeX source to PDF for preview.
+#
+# and create a matching tools/latex_compile/TOOL.md describing the contract.
+
+tools: []
