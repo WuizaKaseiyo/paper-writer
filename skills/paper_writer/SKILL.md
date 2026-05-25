@@ -115,14 +115,69 @@ Exceptions: keep table and figure captions from Stage 7 unchanged even if the or
 
 Write the body sections first. Only after the body is complete, write the Abstract by summarizing what you already wrote. This prevents the abstract from making claims the body doesn't support.
 
-## Step 4 — Submit
+## Step 4 — Dispatch to Output Format
 
-1. Final `write()` of `stage8_paper_writer.md`.
+The synthesised content stays the same regardless of format; only the *carrier* changes.
+
+Parse the task description for an `output_format` directive. The grammar is intentionally minimal:
+
+- `output_format=markdown` (or no directive at all) → **default behaviour** — single Markdown file
+- `output_format=latex venue=iclr2026` → ICLR 2026 LaTeX project
+- `output_format=latex venue=neurips2026` → NeurIPS 2026 LaTeX project
+- `output_format=docx` → academic Word document
+- `output_format=both venue=<venue>` → emit Markdown AND LaTeX (skip docx unless explicitly requested)
+
+If `venue=` is missing for a `latex` or `both` request, default to `iclr2026` and warn in your `submit_result()` summary.
+
+### 4a. Markdown branch (default — original behaviour)
+
+1. `write()` the synthesised content to `stage8_paper_writer.md`.
+2. Proceed to Step 5.
+
+### 4b. LaTeX branch
+
+1. Call `fetch_latex_template(venue=<venue>, dest_dir="<workspace>/stage8_paper")`. This clones the paper-templates repo and copies the venue's `.sty`, `.bst`, `main.tex` starter, `references.bib`, and `figures/` directory.
+2. Read the returned `main_tex_path` to see the skeleton structure.
+3. Build the full filled-in `.tex` content in your scratchpad. The 11 mandatory sections from Step 2 map cleanly onto the LaTeX `\section{}` structure already in the starter — replace its placeholder text with your synthesised content.
+4. Translate Markdown conventions to LaTeX as you write:
+   - `[Author, Year]` inline cites → `\citep{author_year}` (with a corresponding `references.bib` entry)
+   - `*italics*` → `\emph{italics}` (only if the body truly needs emphasis; remember: emphasis sparingly)
+   - Section headers → `\section{}`, `\subsection{}`
+   - Tables → LaTeX `tabular` environments
+   - Display equations → `\begin{equation}...\end{equation}`
+   - `[TODO: missing from Stage N]` markers → keep them verbatim; the critic will see them
+5. `write()` the complete filled-in `.tex` content to `<dest_dir>/main.tex` (overwriting the starter).
+6. `write()` populated `<dest_dir>/references.bib` — one BibTeX entry per citation, sourced exclusively from Stage 2.
+7. Note in your `submit_result()` summary that the deliverable is the project at `<dest_dir>` (not a single file).
+
+### 4c. Docx branch
+
+1. Build the section content as a Python dict `{header: body}` in your scratchpad — keys numbered like `"1. Introduction"`, `"2. Related Work"`, etc.
+2. Call `render_docx(title=..., authors=..., abstract=..., sections={...}, references=..., output_path="<workspace>/stage8_paper_writer.docx", venue=<venue or "generic">)`.
+3. The tool produces a two-column academic Word document. If `python-docx` is not installed in the OMC venv, it returns a clear error — in that case, fall back to writing Markdown and warn in `submit_result()` that docx output was unavailable.
+
+### 4d. Both branch
+
+1. Run **4a** to produce `stage8_paper_writer.md`.
+2. Then run **4b** to produce the LaTeX project at `<workspace>/stage8_paper/`.
+
+### Format-agnostic rules (apply to all branches)
+
+- All five style constraints (British English, no bold, no bullet points, no em-dashes, no stub paragraphs) apply to **all** output formats including LaTeX and Word. Translate the *form* (markdown vs `\textit{}` vs Word italic), not the *rule*.
+- Traceability rules apply identically: every claim still traces to a Stage 1-7 file, regardless of carrier.
+- The 11 mandatory sections must all be present in every format.
+
+## Step 5 — Submit
+
+1. Confirm the deliverable exists at the expected path (single file for markdown/docx, directory for latex/both).
 2. Call `submit_result()` with a one-paragraph summary containing:
-   - Total word count
+   - Output format used and path(s)
+   - Total word count of the body (across all body sections)
    - List of sections produced
    - Any `[TODO: missing from Stage N]` markers and why
    - Any references you had to drop (with reason)
+   - For LaTeX: number of BibTeX entries written; whether any cites lack matching `.bib` entries
+   - For docx: whether `python-docx` was available; warnings returned by `render_docx`
 
 ## What Happens Next
 

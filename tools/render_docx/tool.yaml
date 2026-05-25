@@ -1,0 +1,6 @@
+id: render_docx
+name: render_docx
+description: Render synthesized paper sections into an academic .docx (Word) file. Times New Roman 11pt, two-column body, single-column abstract + references. Requires python-docx installed in the OMC venv.
+type: langchain_module
+added_by: talent:paper-writer
+source_talent: paper-writer

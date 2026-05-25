@@ -1,0 +1,6 @@
+id: fetch_latex_template
+name: fetch_latex_template
+description: Clone the paper-templates repo and copy an ICLR/NeurIPS venue template into a destination directory so the LLM can overwrite main.tex.
+type: langchain_module
+added_by: talent:paper-writer
+source_talent: paper-writer
