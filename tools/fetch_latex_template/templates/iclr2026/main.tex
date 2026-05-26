@@ -1,0 +1,152 @@
+\documentclass{article}
+\usepackage{iclr2026_conference,times}
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ============================================================================
+% Title
+% ============================================================================
+\title{Your Paper Title Here}
+
+% ============================================================================
+% Authors
+%
+% Authors must NOT appear in the submitted version. They should stay hidden
+% as long as \iclrfinalcopy below remains commented out. Non-anonymous
+% submissions will be desk-rejected.
+% ============================================================================
+\author{Anonymous Authors \\
+Anonymous Affiliation \\
+\texttt{anonymous@example.com}
+% Replace once accepted by something like:
+% Alice Author \\
+% Department of Computer Science \\
+% Your University \\
+% \texttt{alice@univ.edu}
+% \And
+% Bob Coauthor \\
+% \texttt{bob@univ.edu}
+}
+
+% Uncomment ONLY for the camera-ready version (after acceptance) — never for
+% the submission itself.
+% \iclrfinalcopy
+
+\begin{document}
+\maketitle
+
+% ============================================================================
+\begin{abstract}
+% 1 paragraph, ~200 words.
+% State the problem, the gap, your contribution, and the headline result.
+% Avoid "we propose a novel ..." — name what's specifically new.
+Replace this paragraph with your abstract.
+\end{abstract}
+
+% ============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Motivate the problem in one paragraph. State the gap in prior work in the
+next. Then list contributions explicitly:
+
+\begin{itemize}
+    \item Contribution 1 — be specific.
+    \item Contribution 2.
+    \item Contribution 3.
+\end{itemize}
+
+Close with a paragraph on paper organization (Section~\ref{sec:related}
+reviews \dots; Section~\ref{sec:method} introduces \dots).
+
+% ============================================================================
+\section{Related Work}
+\label{sec:related}
+
+Group related work by theme, not by venue. For each closest paper, state
+explicitly how this work differs. Avoid the "Smith et al.\ also studied X,
+but \dots" laundry list — group, compare, contrast.
+
+% ============================================================================
+\section{Method}
+\label{sec:method}
+
+State assumptions upfront. Define notation on first use:
+let $\mX \in \mathbb{R}^{n \times d}$ denote \dots
+
+Use subsections for sub-components. The reader should be able to reproduce
+your method from this section alone (modulo hyperparameters, which go in
+the experiments section or appendix).
+
+% ============================================================================
+\section{Experiments}
+\label{sec:exp}
+
+\subsection{Setup}
+Datasets, baselines, metrics, hardware, hyperparameters, random seeds.
+
+\subsection{Main Results}
+% Example table — replace with yours.
+\begin{table}[t]
+\centering
+\caption{Main results. Best in \textbf{bold}.}
+\label{tab:main}
+\begin{tabular}{lcc}
+\toprule
+Method & Metric A $\uparrow$ & Metric B $\downarrow$ \\
+\midrule
+Baseline 1 & 65.4 & 0.42 \\
+Baseline 2 & 67.1 & 0.39 \\
+\textbf{Ours} & \textbf{72.3} & \textbf{0.31} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ablations}
+One ablation per contribution claim in the introduction.
+
+% Example figure stub — uncomment + drop image into figures/
+% \begin{figure}[t]
+% \centering
+% \includegraphics[width=0.7\linewidth]{figures/teaser.pdf}
+% \caption{One-line caption that stands alone.}
+% \label{fig:teaser}
+% \end{figure}
+
+% ============================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+What did we learn? Where does the method break? What is the right way to
+interpret the gains? Honest limitations belong here — reviewers reward
+candor.
+
+% ============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+Restate the contribution (no inflation). Future work should be specific,
+not "we plan to extend this to more domains."
+
+% ============================================================================
+% Bibliography
+% ============================================================================
+\bibliographystyle{iclr2026_conference}
+\bibliography{references}
+
+% ============================================================================
+% Appendix (uncomment if needed)
+% ============================================================================
+% \appendix
+% \section{Additional Experiments}
+% \label{app:additional}
+
+\end{document}

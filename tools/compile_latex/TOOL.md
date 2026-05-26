@@ -60,6 +60,7 @@ On error:
 ## Dependencies and safety
 
 - Requires a TeX distribution on the host `$PATH` (MacTeX, TeX Live, or MiKTeX). If none is found, the tool returns a clear error suggesting `output_format=markdown` or `docx` instead. The talent runs in the OMC backend, so the TeX distribution must be installed on that host, not just on a developer laptop.
+- Prefer a *complete* distribution (full TeX Live / MacTeX), not a minimal one (BasicTeX). The venue styles pull in common CTAN packages: the NeurIPS style needs `environ` (which itself needs `trimspaces`), `geometry`, `natbib`, and `lineno`. A missing package surfaces in `log_tail` as `File 'foo.sty' not found`; install it on the host with `tlmgr install foo`.
 - Shell escape (`\write18`) is disabled on every direct engine call, so a `.tex` file cannot run arbitrary host commands during compilation.
 
 ## What this tool does NOT do

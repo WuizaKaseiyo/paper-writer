@@ -1,0 +1,47 @@
+                CC0 1.0 Universal — Public Domain Dedication
+              (applies only to original content in this repository:
+                   starter main.tex files, scripts, README)
+
+The person who associated a work with this deed has dedicated the work to
+the public domain by waiving all of his or her rights to the work worldwide
+under copyright law, including all related and neighboring rights, to the
+extent allowed by law.
+
+You can copy, modify, distribute and perform the work, even for commercial
+purposes, all without asking permission.
+
+In no way are the patent or trademark rights of any person affected by
+CC0, nor are the rights that other persons may have in the work or in how
+the work is used, such as publicity or privacy rights.
+
+Unless expressly stated otherwise, the person who associated a work with
+this deed makes no warranties about the work, and disclaims liability for
+all uses of the work, to the fullest extent permitted by applicable law.
+
+For the full legal code, see:
+https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+---
+
+CONFERENCE TEMPLATE FILES — NOT COVERED BY CC0
+
+The following files were authored by the respective conference organizing
+committees and are redistributed under the implicit "use these files to
+format your submission to this conference" permission, which is standard
+for camera-ready / formatting-instruction packages:
+
+  iclr2026/iclr2026_conference.sty   — ICLR 2026 organizing committee
+  iclr2026/iclr2026_conference.bst   — ICLR 2026 organizing committee
+  iclr2026/fancyhdr.sty              — (third-party, used by ICLR template)
+  iclr2026/natbib.sty                — (third-party, used by ICLR template)
+  iclr2026/math_commands.tex         — Goodfellow et al. dlbook_notation (Apache 2.0)
+  iclr2026/official_template.tex     — ICLR 2026 organizing committee
+
+  neurips2026/neurips_2026.sty       — NeurIPS 2026 organizing committee
+  neurips2026/checklist.tex          — NeurIPS 2026 organizing committee
+  neurips2026/official_template.tex  — NeurIPS 2026 organizing committee
+
+These remain under their original authors' terms. The current redistribution
+is purely for the convenience of paper authors submitting to these venues.
+If you are an organizer and want a file removed or attributed differently,
+please open an issue.

@@ -47,7 +47,8 @@ paper-writer/
 ├── tools/
 │   ├── .mcp.json                             no MCP servers needed
 │   ├── manifest.yaml                         tool manifest (template/notes)
-│   ├── fetch_latex_template/                 clone ICLR/NeurIPS venue template
+│   ├── fetch_latex_template/                 copy bundled ICLR/NeurIPS template (offline)
+│   │   └── templates/                        vendored iclr2026 + neurips2026 (+ NOTICE)
 │   ├── render_docx/                          synthesise sections → academic .docx
 │   └── compile_latex/                        compile main.tex → PDF (host TeX)
 └── tests/                                    offline-mocked tool tests
@@ -60,12 +61,12 @@ The default output is a single Markdown file. The task may request another carri
 | `output_format` | Deliverable | Backed by |
 |---|---|---|
 | `markdown` (default) | `stage8_paper_writer.md` | built-in `write()` |
-| `latex venue=iclr2026` / `neurips2026` | LaTeX project (source only) | `fetch_latex_template` |
+| `latex venue=iclr2026` / `neurips2026` | LaTeX project (source only) | `fetch_latex_template` (bundled, offline) |
 | `docx` | two-column academic `.docx` | `render_docx` (needs `python-docx`) |
 | `pdf venue=<venue>` | compiled PDF (plus LaTeX source) | `fetch_latex_template` + `compile_latex` (needs host TeX) |
 | `both venue=<venue>` | Markdown + LaTeX | the above |
 
-Only `iclr2026` and `neurips2026` venues are supported; a missing `venue=` defaults to `iclr2026` with a warning. The `docx` and `pdf` paths depend on host software (`python-docx`, a TeX distribution) and degrade gracefully when it is absent.
+Only `iclr2026` and `neurips2026` venues are supported; a missing `venue=` defaults to `iclr2026` with a warning. The two venue templates are vendored under `tools/fetch_latex_template/templates/`, so the LaTeX/PDF source setup runs offline (no `git`, no network); conference style files keep their original authors' terms (see `templates/NOTICE`). The `docx` and `pdf` paths still depend on host software (`python-docx`, a TeX distribution) and degrade gracefully when it is absent.
 
 ## How to use
 

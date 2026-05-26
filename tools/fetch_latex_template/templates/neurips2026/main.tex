@@ -1,0 +1,178 @@
+\documentclass{article}
+
+% ============================================================================
+% Track selection
+% ============================================================================
+% Pick exactly ONE of the following lines. The default below = Main Track,
+% double-blind reviewing. Switch by uncommenting a different `[opt]` line and
+% commenting out the default `\usepackage{neurips_2026}`.
+%
+% \usepackage{neurips_2026}                          % main (default)
+% \usepackage[main]{neurips_2026}                    % explicit Main Track
+% \usepackage[position]{neurips_2026}                % Position Paper Track
+% \usepackage[eandd]{neurips_2026}                   % Evaluations & Datasets
+% \usepackage[creativeai]{neurips_2026}              % Creative AI Track
+% \usepackage[sglblindworkshop]{neurips_2026}        % Workshop (single-blind)
+% \usepackage[dblblindworkshop]{neurips_2026}        % Workshop (double-blind)
+%
+% For camera-ready, ADD `final` to the track option, e.g.:
+%   \usepackage[main, final]{neurips_2026}
+%
+% For arXiv / preprint distribution:
+%   \usepackage[preprint]{neurips_2026}
+%
+\usepackage{neurips_2026}
+
+% For workshop submissions, also set:
+% \workshoptitle{Your Workshop Name}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ============================================================================
+% Title
+% ============================================================================
+\title{Your Paper Title Here}
+
+% ============================================================================
+% Authors
+%
+% By default, NeurIPS uses double-blind reviewing — author info is hidden
+% from the compiled PDF until [final] is set. You can still fill the
+% \author block; it only renders in the camera-ready.
+% ============================================================================
+\author{
+  Alice Author \\
+  Department of Computer Science \\
+  Your University \\
+  \texttt{alice@univ.edu}
+  \And
+  Bob Coauthor \\
+  Department of Statistics \\
+  Your University \\
+  \texttt{bob@univ.edu}
+}
+
+\begin{document}
+\maketitle
+
+% ============================================================================
+\begin{abstract}
+% Abstract is ~200 words. State problem, gap, contribution, headline result.
+% Avoid vague "we propose" — name what's specifically new.
+Replace this paragraph with your abstract.
+\end{abstract}
+
+% ============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Motivate the problem in one paragraph. State the gap in prior work in the
+next. Then list contributions explicitly:
+
+\begin{itemize}
+    \item Contribution 1 --- be specific.
+    \item Contribution 2.
+    \item Contribution 3.
+\end{itemize}
+
+Close with a paragraph on paper organization (Section~\ref{sec:related}
+reviews \dots; Section~\ref{sec:method} introduces \dots).
+
+% ============================================================================
+\section{Related Work}
+\label{sec:related}
+
+Group related work by theme, not by venue. For each closest paper, state
+explicitly how this work differs.
+
+% ============================================================================
+\section{Method}
+\label{sec:method}
+
+State assumptions upfront. Define notation on first use.
+
+% ============================================================================
+\section{Experiments}
+\label{sec:exp}
+
+\subsection{Setup}
+Datasets, baselines, metrics, hardware, hyperparameters, random seeds.
+
+\subsection{Main Results}
+\begin{table}[t]
+\centering
+\caption{Main results. Best in \textbf{bold}.}
+\label{tab:main}
+\begin{tabular}{lcc}
+\toprule
+Method & Metric A $\uparrow$ & Metric B $\downarrow$ \\
+\midrule
+Baseline 1 & 65.4 & 0.42 \\
+Baseline 2 & 67.1 & 0.39 \\
+\textbf{Ours} & \textbf{72.3} & \textbf{0.31} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ablations}
+One ablation per contribution claim in the introduction.
+
+% Example figure:
+% \begin{figure}[t]
+% \centering
+% \includegraphics[width=0.7\linewidth]{figures/teaser.pdf}
+% \caption{One-line caption that stands alone.}
+% \label{fig:teaser}
+% \end{figure}
+
+% ============================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+What did we learn? Where does the method break? Honest limitations belong
+here — NeurIPS reviewers reward candor (and the Checklist explicitly asks
+about limitations).
+
+% ============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+Restate the contribution (no inflation). Future work should be specific.
+
+% ============================================================================
+% Bibliography
+% ============================================================================
+% NeurIPS uses plainnat by default (loaded by the .sty). plainnat reads .bib
+% with natbib-style citations.
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% ============================================================================
+% NeurIPS Paper Checklist — REQUIRED for submission.
+% Papers without the checklist are desk-rejected.
+%
+% The checklist does NOT count toward the page limit. It goes AFTER the
+% references and (optional) supplemental material.
+% ============================================================================
+\newpage
+\input{checklist}
+
+% ============================================================================
+% Appendix (uncomment if needed; goes after checklist)
+% ============================================================================
+% \appendix
+% \section{Additional Experiments}
+% \label{app:additional}
+
+\end{document}
