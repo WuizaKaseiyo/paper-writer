@@ -1,7 +1,7 @@
 ---
 name: paper_writer
-version: 1.0.0
-description: "Runbook for synthesizing all prior AutoResearch stage outputs into a publication-grade paper draft. Non-negotiable section list, traceability rules, and output contract."
+version: 1.2.0
+description: "Runbook for synthesizing all prior AutoResearch stage outputs into a publication-grade paper draft. Non-negotiable section list, claim-ledger white-list, inline per-sentence traceability, multi-format output (markdown / latex / docx), and output contract."
 author: AutoResearch
 ---
 
@@ -33,9 +33,59 @@ Before reading anything, call `ls()` on the project workspace. You must see all 
 - Every numerical table and figure caption (Stages 6, 7)
 - Limitations explicitly noted by any earlier stage
 
-## Step 2 — Write the Paper
+## Step 2 — Build the Claim Ledger
 
-Output **one** file `stage8_paper_writer.md` via `write()` with these sections in this order. The section names are mandatory; do not rename, omit, or reorder.
+Before you write a single sentence of the paper, build a **claim ledger** in your scratchpad. The ledger is the white-list of everything you are permitted to assert. If a statement is not backed by a ledger entry, it does not enter the paper. This step is what stops the most common failure: writing a fluent, plausible sentence that no prior stage actually supports (the "A becomes A+B" elaboration).
+
+Go through your Step 1 notes and extract every discrete, citable claim into a table. One row per claim:
+
+| Field | Meaning |
+|---|---|
+| `id` | Sequential handle, `L1`, `L2`, … You reference these inline while drafting. |
+| `type` | `quant` (a number, table cell, or figure value), `def` (a formal definition, equation, or algorithm), `qual` (a qualitative finding, design choice, or hypothesis), or `cite` (a reference from Stage 2). |
+| `source` | The stage it came from: `S1`–`S7`. |
+| `fragment` | The **verbatim** source text, copied byte-for-byte. For `quant`, copy the exact number. For `def`, copy the notation unchanged. |
+
+Example:
+
+```
+| id | type  | source | fragment                                                          |
+|----|-------|--------|-------------------------------------------------------------------|
+| L1 | quant | S7     | "Sparse-A reaches 82.3 F1 versus 80.1 for the dense baseline"     |
+| L2 | def   | S4     | "loss L = L_task + lambda * ||W||_1 with lambda = 1e-3"           |
+| L3 | qual  | S3     | "hypothesis: activation sparsity improves out-of-domain transfer" |
+| L4 | cite  | S2     | "Vaswani et al. (2017), Attention Is All You Need"                |
+```
+
+Rules for the ledger:
+- **Extract, do not interpret.** A ledger entry records what a stage *said*, not what you infer it *implies*. "Accuracy rose 2 points" is a valid entry; "the method generalises well" is not, unless a stage said exactly that.
+- **No entry, no fact.** If while reading you wanted to write something but cannot find a fragment for it, it gets no ledger row, which means it cannot enter the paper.
+- The ledger is scratchpad-only. It is **not** part of the output file, but you report its size in `submit_result()`.
+
+## Step 3 — Write the Paper Body
+
+### Draft with inline source tags
+
+You draft in **two passes**. In the first pass you write the body with a source tag appended to **every sentence**. In Step 5 you strip the tags to produce the clean, format-ready content. Tagging while you draft is what forces each sentence to earn its place; do not skip it and "write clean directly", because that is exactly when unsupported elaboration creeps in.
+
+Every body sentence falls into exactly one of three categories and carries the matching tag:
+
+- **Sourced** — the sentence asserts a fact, and that fact maps to a ledger entry. Tag it with the entry id: `⟨L7⟩`. A sentence may cite several entries: `⟨L7,L9⟩`. This is the only category allowed to state findings, numbers, definitions, or claims.
+- **Connective** — the sentence carries no factual content; it only links, signposts, or restates structure (e.g. "This section describes the experimental setup."). Tag it `⟨—⟩`. Keep these rare.
+- **Speculation** — an interpretation that no stage states outright. Allowed **only** in Discussion, **only** with hedging ("we conjecture", "this suggests, though not directly tested, that …"), and tagged `⟨spec⟩`.
+
+If a sentence fits none of the three, it is a hallucination by definition: either find a ledger entry for it (and make it Sourced) or delete it. There is no fourth category. A sentence that *feels* true and *reads* fluently but has no ledger id is exactly the failure this guards against.
+
+Worked micro-example. Suppose the ledger has only `L1 = "Sparse-A reaches 82.3 F1 vs 80.1 baseline"`.
+
+- Allowed: *"Sparse-A reaches 82.3 F1, against 80.1 for the dense baseline. ⟨L1⟩"*
+- Forbidden (this is the A→A+B failure): *"Sparse-A reaches 82.3 F1, against 80.1 for the dense baseline, because sparsity suppresses noisy activations."* The clause after "because" has no ledger entry. Either it earns its own entry from a stage, or it is cut. To offer it as interpretation, move it to Discussion, hedge it, and tag `⟨spec⟩`.
+
+The tagging requirement applies to Introduction, Related Work, Methodology, Experimental Setup, Results, Discussion, Limitations, and Conclusion. Title and References are exempt (Title derives from Stage 1; References are governed by the `citation-management` skill). Tagging happens at the level of the synthesised content and is carrier-independent: the format chosen later in Step 6 does not change which sentences are allowed.
+
+### Section contract
+
+Author the following sections in this order. The section names are mandatory; do not rename, omit, or reorder. The *carrier* (Markdown, LaTeX, or Word) is selected later in Step 6; here you produce the content.
 
 ### Required Sections
 
@@ -84,7 +134,7 @@ Output **one** file `stage8_paper_writer.md` via `write()` with these sections i
 
 ### Style — Strict Output Constraints
 
-The rules below apply to your output file `stage8_paper_writer.md`. They do NOT apply to your scratchpad notes or to your `submit_result()` summary. Violating any of these is an automatic Stage 9 reject.
+The rules below apply to the synthesised content in every output format (Markdown, LaTeX, Word). They do NOT apply to your scratchpad notes or to your `submit_result()` summary. Violating any of these is an automatic Stage 9 reject.
 
 **Voice and tense.** Third person present tense for the work itself (e.g. *"We propose a method that …"*); past tense for experiments performed (e.g. *"Models were trained on the dataset described in Section 4."*).
 
@@ -111,13 +161,25 @@ Exceptions: keep table and figure captions from Stage 7 unchanged even if the or
 
 **Vocabulary prohibitions.** Do not use *novel*, *revolutionary*, *groundbreaking*, or *state-of-the-art* unless Stage 7 provides an explicit quantitative comparison that supports the claim. Avoid hedge-stacking such as *"we somewhat suggest the possibility that …"*; state a hedged claim once, cleanly, with a single hedge.
 
-## Step 3 — Draft the Abstract Last
+## Step 4 — Draft the Abstract Last
 
-Write the body sections first. Only after the body is complete, write the Abstract by summarizing what you already wrote. This prevents the abstract from making claims the body doesn't support.
+Write the body sections first. Only after the body is complete, write the Abstract by summarising what you already wrote. This prevents the abstract from making claims the body does not support. Tag abstract sentences too: every abstract sentence must restate a body sentence that is itself `⟨L…⟩`-sourced. The abstract introduces no new ledger reference and no claim the body did not already make.
 
-## Step 4 — Dispatch to Output Format
+## Step 5 — Self-Audit and Strip Tags
 
-The synthesised content stays the same regardless of format; only the *carrier* changes.
+You now have a fully tagged draft (body plus abstract). Do not emit any format yet. Run this audit, in order:
+
+1. **Untagged-sentence sweep.** Read every sentence of the body. Any sentence with no `⟨…⟩` tag is unaccounted for: attach the correct ledger id, demote it to `⟨—⟩` if it truly carries no claim, or delete it. After this sweep, **every** body sentence has exactly one tag.
+2. **Speculation check.** For each `⟨spec⟩` sentence, confirm it sits in Discussion and is hedged. If a `⟨spec⟩` sentence reads as a flat assertion, reword it as a conjecture or cut it.
+3. **Connective budget.** Count `⟨—⟩` sentences. If they exceed roughly one per section, you are padding; the usual cause is the "three substantive sentences per paragraph" rule pushing you to invent filler. Prefer a shorter, fully-sourced paragraph over a padded one. **Traceability outranks the paragraph-length style rule whenever they conflict.**
+4. **Abstract back-check.** Confirm each abstract sentence maps to an `⟨L…⟩`-sourced body sentence.
+5. **Quant spot-check.** For each `⟨L…⟩` of type `quant`, compare the number in your prose against the ledger fragment character-by-character. No rounding, no reformatting.
+
+Only after all five pass, **strip the tags**: remove every `⟨…⟩` token plus any stray whitespace it leaves behind. The result is the clean, tag-free synthesised content that Step 6 emits in the requested format. Whatever files Step 6 writes (Markdown, LaTeX, or Word) **must contain zero `⟨` characters**. A surviving tag is itself an automatic Stage 9 reject, so verify before submitting.
+
+## Step 6 — Dispatch to Output Format
+
+The synthesised content (clean and de-tagged from Step 5) stays the same regardless of format; only the *carrier* changes.
 
 Parse the task description for an `output_format` directive. The grammar is intentionally minimal:
 
@@ -129,16 +191,16 @@ Parse the task description for an `output_format` directive. The grammar is inte
 
 If `venue=` is missing for a `latex` or `both` request, default to `iclr2026` and warn in your `submit_result()` summary.
 
-### 4a. Markdown branch (default — original behaviour)
+### 6a. Markdown branch (default — original behaviour)
 
 1. `write()` the synthesised content to `stage8_paper_writer.md`.
-2. Proceed to Step 5.
+2. Proceed to Step 7.
 
-### 4b. LaTeX branch
+### 6b. LaTeX branch
 
 1. Call `fetch_latex_template(venue=<venue>, dest_dir="<workspace>/stage8_paper")`. This clones the paper-templates repo and copies the venue's `.sty`, `.bst`, `main.tex` starter, `references.bib`, and `figures/` directory.
 2. Read the returned `main_tex_path` to see the skeleton structure.
-3. Build the full filled-in `.tex` content in your scratchpad. The 11 mandatory sections from Step 2 map cleanly onto the LaTeX `\section{}` structure already in the starter — replace its placeholder text with your synthesised content.
+3. Build the full filled-in `.tex` content in your scratchpad. The 11 mandatory sections from Step 3 map cleanly onto the LaTeX `\section{}` structure already in the starter — replace its placeholder text with your synthesised content.
 4. Translate Markdown conventions to LaTeX as you write:
    - `[Author, Year]` inline cites → `\citep{author_year}` (with a corresponding `references.bib` entry)
    - `*italics*` → `\emph{italics}` (only if the body truly needs emphasis; remember: emphasis sparingly)
@@ -150,30 +212,33 @@ If `venue=` is missing for a `latex` or `both` request, default to `iclr2026` an
 6. `write()` populated `<dest_dir>/references.bib` — one BibTeX entry per citation, sourced exclusively from Stage 2.
 7. Note in your `submit_result()` summary that the deliverable is the project at `<dest_dir>` (not a single file).
 
-### 4c. Docx branch
+### 6c. Docx branch
 
 1. Build the section content as a Python dict `{header: body}` in your scratchpad — keys numbered like `"1. Introduction"`, `"2. Related Work"`, etc.
 2. Call `render_docx(title=..., authors=..., abstract=..., sections={...}, references=..., output_path="<workspace>/stage8_paper_writer.docx", venue=<venue or "generic">)`.
 3. The tool produces a two-column academic Word document. If `python-docx` is not installed in the OMC venv, it returns a clear error — in that case, fall back to writing Markdown and warn in `submit_result()` that docx output was unavailable.
 
-### 4d. Both branch
+### 6d. Both branch
 
-1. Run **4a** to produce `stage8_paper_writer.md`.
-2. Then run **4b** to produce the LaTeX project at `<workspace>/stage8_paper/`.
+1. Run **6a** to produce `stage8_paper_writer.md`.
+2. Then run **6b** to produce the LaTeX project at `<workspace>/stage8_paper/`.
 
 ### Format-agnostic rules (apply to all branches)
 
 - All five style constraints (British English, no bold, no bullet points, no em-dashes, no stub paragraphs) apply to **all** output formats including LaTeX and Word. Translate the *form* (markdown vs `\textit{}` vs Word italic), not the *rule*.
-- Traceability rules apply identically: every claim still traces to a Stage 1-7 file, regardless of carrier.
+- Traceability rules apply identically: every claim still traces to a Stage 1-7 file, regardless of carrier. The claim-ledger discipline from Step 2 and the inline-tag audit from Step 5 are carrier-independent; tags are stripped before any format is emitted, so no carrier may reintroduce an untraced claim.
 - The 11 mandatory sections must all be present in every format.
 
-## Step 5 — Submit
+## Step 7 — Submit
 
-1. Confirm the deliverable exists at the expected path (single file for markdown/docx, directory for latex/both).
+1. Confirm the deliverable exists at the expected path (single file for markdown/docx, directory for latex/both) and that no `⟨…⟩` tag survived into it.
 2. Call `submit_result()` with a one-paragraph summary containing:
    - Output format used and path(s)
    - Total word count of the body (across all body sections)
    - List of sections produced
+   - Claim-ledger size (number of entries, broken down by type)
+   - Sentence accounting: how many `⟨L…⟩` sourced, `⟨—⟩` connective, `⟨spec⟩` speculation
+   - Confirmation that the deliverable is tag-free
    - Any `[TODO: missing from Stage N]` markers and why
    - Any references you had to drop (with reason)
    - For LaTeX: number of BibTeX entries written; whether any cites lack matching `.bib` entries
@@ -187,6 +252,10 @@ Your output flows directly into **Stage 9 (`adversarial-critic` with skill `peer
 
 | Failure | Why it gets rejected |
 |---|---|
+| Writing a fluent, plausible sentence with no ledger entry | The A→A+B elaboration; untraceable, automatic reject |
+| Leaving a `⟨…⟩` tag in any emitted deliverable | Strip step skipped or incomplete; automatic reject |
+| Stating an interpretation without `⟨spec⟩` plus hedging | Speculation presented as result; automatic reject |
+| Padding paragraphs with connective filler to reach three sentences | Inflated `⟨—⟩` budget; prefer shorter sourced prose |
 | Citing a paper not in Stage 2 | Untraceable; critic flags as hallucination |
 | Rounding a number from Stage 7 | Quantitative drift; critic flags as misreporting |
 | Skipping the Limitations section | Mandatory section is missing; automatic reject |
