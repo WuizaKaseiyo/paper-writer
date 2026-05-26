@@ -1,0 +1,6 @@
+id: compile_latex
+name: compile_latex
+description: Compile a filled-in LaTeX project (main.tex + references.bib) into a PDF using a host TeX distribution (latexmk or pdflatex/xelatex/lualatex). Returns the PDF path or a log tail on failure.
+type: langchain_module
+added_by: talent:paper-writer
+source_talent: paper-writer

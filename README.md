@@ -44,10 +44,28 @@ paper-writer/
 ├── skills/
 │   ├── paper_writer/SKILL.md                 main runbook (Stage 8 routing key)
 │   └── citation-management/SKILL.md          inline-citation and reference rules
-└── tools/
-    ├── .mcp.json                             no MCP servers needed
-    └── manifest.yaml                         no custom tools (uses BASE_TOOLS)
+├── tools/
+│   ├── .mcp.json                             no MCP servers needed
+│   ├── manifest.yaml                         tool manifest (template/notes)
+│   ├── fetch_latex_template/                 clone ICLR/NeurIPS venue template
+│   ├── render_docx/                          synthesise sections → academic .docx
+│   └── compile_latex/                        compile main.tex → PDF (host TeX)
+└── tests/                                    offline-mocked tool tests
 ```
+
+## Output formats
+
+The default output is a single Markdown file. The task may request another carrier via an `output_format` directive parsed in the runbook's dispatch step:
+
+| `output_format` | Deliverable | Backed by |
+|---|---|---|
+| `markdown` (default) | `stage8_paper_writer.md` | built-in `write()` |
+| `latex venue=iclr2026` / `neurips2026` | LaTeX project (source only) | `fetch_latex_template` |
+| `docx` | two-column academic `.docx` | `render_docx` (needs `python-docx`) |
+| `pdf venue=<venue>` | compiled PDF (plus LaTeX source) | `fetch_latex_template` + `compile_latex` (needs host TeX) |
+| `both venue=<venue>` | Markdown + LaTeX | the above |
+
+Only `iclr2026` and `neurips2026` venues are supported; a missing `venue=` defaults to `iclr2026` with a warning. The `docx` and `pdf` paths depend on host software (`python-docx`, a TeX distribution) and degrade gracefully when it is absent.
 
 ## How to use
 

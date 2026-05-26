@@ -1,7 +1,7 @@
 ---
 name: paper_writer
-version: 1.2.0
-description: "Runbook for synthesizing all prior AutoResearch stage outputs into a publication-grade paper draft. Non-negotiable section list, claim-ledger white-list, inline per-sentence traceability, multi-format output (markdown / latex / docx), and output contract."
+version: 1.3.0
+description: "Runbook for synthesizing all prior AutoResearch stage outputs into a publication-grade paper draft. Non-negotiable section list, claim-ledger white-list, inline per-sentence traceability, multi-format output (markdown / latex / docx / pdf), and output contract."
 author: AutoResearch
 ---
 
@@ -184,12 +184,13 @@ The synthesised content (clean and de-tagged from Step 5) stays the same regardl
 Parse the task description for an `output_format` directive. The grammar is intentionally minimal:
 
 - `output_format=markdown` (or no directive at all) → **default behaviour** — single Markdown file
-- `output_format=latex venue=iclr2026` → ICLR 2026 LaTeX project
-- `output_format=latex venue=neurips2026` → NeurIPS 2026 LaTeX project
+- `output_format=latex venue=iclr2026` → ICLR 2026 LaTeX project (source only, not compiled)
+- `output_format=latex venue=neurips2026` → NeurIPS 2026 LaTeX project (source only, not compiled)
 - `output_format=docx` → academic Word document
-- `output_format=both venue=<venue>` → emit Markdown AND LaTeX (skip docx unless explicitly requested)
+- `output_format=pdf venue=<venue>` → LaTeX project compiled to PDF
+- `output_format=both venue=<venue>` → emit Markdown AND LaTeX (skip docx and pdf unless explicitly requested)
 
-If `venue=` is missing for a `latex` or `both` request, default to `iclr2026` and warn in your `submit_result()` summary.
+If `venue=` is missing for a `latex`, `pdf`, or `both` request, default to `iclr2026` and warn in your `submit_result()` summary.
 
 ### 6a. Markdown branch (default — original behaviour)
 
@@ -223,6 +224,13 @@ If `venue=` is missing for a `latex` or `both` request, default to `iclr2026` an
 1. Run **6a** to produce `stage8_paper_writer.md`.
 2. Then run **6b** to produce the LaTeX project at `<workspace>/stage8_paper/`.
 
+### 6e. PDF branch
+
+1. Run **6b** in full to materialise and fill in the LaTeX project at `<dest_dir> = <workspace>/stage8_paper`. The PDF path reuses the LaTeX path; do not author content twice.
+2. Call `compile_latex(project_dir="<dest_dir>")`. It compiles `main.tex` with the host TeX distribution (latexmk if present, otherwise pdflatex with a BibTeX pass) and returns `pdf_path` on success.
+3. If `compile_latex` returns `status="error"`, do not discard the work: the filled-in LaTeX project is still a valid deliverable. Report the failure and the returned `log_tail` in `submit_result()`, and note that the PDF could not be produced (for example, no TeX distribution on the host, or a LaTeX error in `log_tail`). The deliverable then degrades to the LaTeX project, exactly as `output_format=latex`.
+4. On success, the deliverables are both the compiled `pdf_path` and the LaTeX project alongside it.
+
 ### Format-agnostic rules (apply to all branches)
 
 - All five style constraints (British English, no bold, no bullet points, no em-dashes, no stub paragraphs) apply to **all** output formats including LaTeX and Word. Translate the *form* (markdown vs `\textit{}` vs Word italic), not the *rule*.
@@ -243,6 +251,7 @@ If `venue=` is missing for a `latex` or `both` request, default to `iclr2026` an
    - Any references you had to drop (with reason)
    - For LaTeX: number of BibTeX entries written; whether any cites lack matching `.bib` entries
    - For docx: whether `python-docx` was available; warnings returned by `render_docx`
+   - For PDF: the engine `compile_latex` used and the `pdf_path`, or, if compilation failed, the `log_tail` and the fact that the deliverable degraded to the LaTeX source project
 
 ## What Happens Next
 
