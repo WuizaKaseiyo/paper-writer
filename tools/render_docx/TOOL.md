@@ -19,6 +19,7 @@ synthesized the full paper content from Stage 1-7 into a structured form.
 | `references` | str | `""` | References block — one entry per line. Single-column, hanging indent, 10pt. |
 | `output_path` | str | (required) | Absolute path for the output `.docx` |
 | `venue` | str | `"generic"` | Informational — saved into doc properties |
+| `figures` | list[dict] | `None` | Figures to embed. See **Embedding figures** below. |
 
 ## How to populate `sections`
 
@@ -44,6 +45,40 @@ Each value is **markdown-style** text:
 - Inline `[Author, Year]` citations preserved as plain text
 - Display equations as `$$expression$$` on their own paragraph
 - Simple tables in markdown pipe syntax
+
+## Embedding figures
+
+Pass `figures` to embed PNG/JPG images at the end of specific sections.
+Each list entry is a dict:
+
+```python
+figures = [
+    {
+        "path": "/abs/path/to/stage4_framework_figure.png",
+        "caption": "Figure 1: Overview of the proposed framework.",
+        "section": "3. Methodology",   # must exactly match a key in `sections`
+    },
+    {
+        "path": "/abs/path/to/stage7_results_curve.png",
+        "caption": "Figure 2: Loss curve across training epochs.",
+        "section": "5. Results",
+    },
+]
+```
+
+Behaviour:
+- Each figure is rendered centered, width 3.25 in (one column of the
+  two-column body), followed by an italic 10pt caption.
+- Figures appear at the **end** of their target section.
+- If `path` does not exist, a warning is added and the figure is
+  skipped — the rest of the document still renders.
+- If `section` does not match any key in `sections`, a warning is added
+  and the figure is appended at the end of the body (before References)
+  rather than silently dropped.
+
+The return value's `figure_count` reflects how many figures were
+successfully embedded; `warnings` lists any that were skipped or
+relocated.
 
 ## What it produces
 

@@ -41,6 +41,7 @@ def render_docx(
     abstract: str = "",
     references: str = "",
     venue: str = "generic",
+    figures: list[dict] | None = None,
 ) -> dict[str, Any]:
     """Render a structured paper into a Word .docx with academic styling.
 
@@ -58,6 +59,15 @@ def render_docx(
         venue: Informational tag (logged into the .docx properties);
             does not change formatting today. Reserved for future
             per-venue templates.
+        figures: Optional list of figure descriptors. Each entry is
+            ``{"path": "<abs path to .png/.jpg>", "caption": "<caption>",
+            "section": "<exact key from sections>"}``. Each figure is
+            inserted at the end of its target section, centered, followed
+            by an italic 10pt caption. Default render width is 3.25 in
+            (fits one column of the two-column body). When the path is
+            missing or the section key does not match, a warning is
+            recorded and the figure is appended at the end of the body
+            (before References) rather than dropped silently.
 
     Returns:
         {
@@ -65,6 +75,7 @@ def render_docx(
           "output_path": "...",
           "size_bytes": N,
           "section_count": K,
+          "figure_count": F,
           "warnings": [...]
         }
     """
@@ -132,12 +143,30 @@ def render_docx(
         # Justify abstract body
         p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
+    # ── Normalise figures: group by target section, keep orphans aside ───
+    figures = figures or []
+    figs_by_section: dict[str, list[dict]] = {}
+    orphan_figs: list[dict] = []
+    section_keys = set(sections.keys())
+    for fig in figures:
+        sec = (fig.get("section") or "").strip()
+        if sec and sec in section_keys:
+            figs_by_section.setdefault(sec, []).append(fig)
+        else:
+            if sec:
+                warnings.append(
+                    f"figure section '{sec}' did not match any sections key; "
+                    "appended at end of body"
+                )
+            orphan_figs.append(fig)
+
     # ── Section break to two-column body ─────────────────────────────────
     new_section = doc.add_section(WD_SECTION.CONTINUOUS)
     _set_column_count(new_section, 2)
 
     # ── Body sections ────────────────────────────────────────────────────
     section_count = 0
+    figure_count = 0
     for sec_name, sec_body in sections.items():
         section_count += 1
         h = doc.add_paragraph()
@@ -158,6 +187,16 @@ def render_docx(
             else:
                 p = doc.add_paragraph(block)
                 p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+
+        # Figures targeting this section follow the last body block.
+        for fig in figs_by_section.get(sec_name, []):
+            if _add_figure(doc, fig, warnings):
+                figure_count += 1
+
+    # Orphan figures (missing or unmatched section) land at the body's tail.
+    for fig in orphan_figs:
+        if _add_figure(doc, fig, warnings):
+            figure_count += 1
 
     # ── Section break back to single-column for references ───────────────
     if references:
@@ -198,6 +237,7 @@ def render_docx(
         "output_path": output_path,
         "size_bytes": os.path.getsize(output_path),
         "section_count": section_count,
+        "figure_count": figure_count,
         "warnings": warnings,
     }
 
@@ -205,6 +245,46 @@ def render_docx(
 # ─────────────────────────────────────────────────────────────────────────────
 # Helpers
 # ─────────────────────────────────────────────────────────────────────────────
+
+
+def _add_figure(doc, fig: dict, warnings: list) -> bool:
+    """Insert a centered image + italic caption. Returns True on success.
+
+    Defensively skips and warns when the image is missing or unreadable —
+    a single bad figure must not abort the whole .docx render.
+    """
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Inches, Pt
+
+    path = fig.get("path", "")
+    caption = fig.get("caption", "")
+
+    if not path:
+        warnings.append("figure missing 'path' key; skipping")
+        return False
+
+    img_path = Path(path).expanduser()
+    if not img_path.exists():
+        warnings.append(f"figure not found at {path}; skipping")
+        return False
+
+    para = doc.add_paragraph()
+    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    try:
+        run = para.add_run()
+        run.add_picture(str(img_path), width=Inches(3.25))
+    except Exception as e:
+        warnings.append(f"failed to embed image at {path}: {e}; skipping")
+        return False
+
+    if caption:
+        cap_p = doc.add_paragraph()
+        cap_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        cap_run = cap_p.add_run(caption)
+        cap_run.italic = True
+        cap_run.font.size = Pt(10)
+
+    return True
 
 
 def _set_column_count(section, n: int) -> None:
