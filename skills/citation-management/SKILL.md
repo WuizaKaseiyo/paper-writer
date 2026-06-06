@@ -50,16 +50,20 @@ Subsequent mentions of the same work need not repeat the marker; first mention i
 
 ## Inline Format
 
-Always `[Author, Year]`. Examples:
+**Square brackets, not parentheses.** Always `[Author, Year]` — the opening token is `[`, never `(`. This is non-negotiable: `(Author, Year)` is a citation-format violation, not a stylistic choice.
 
-| Authors | Inline |
-|---|---|
-| Single author | `(Vaswani, 2017)` |
-| Two authors | `(Brown & Mann, 2020)` |
-| Three or more | `(Bommasani et al., 2021)` |
-| Same author, same year, multiple papers | `(Smith, 2023a)`, `(Smith, 2023b)` |
+| Authors | Correct | Wrong |
+|---|---|---|
+| Single author | `[Vaswani, 2017]` | `(Vaswani, 2017)` |
+| Two authors | `[Brown & Mann, 2020]` | `(Brown & Mann, 2020)` |
+| Three or more | `[Bommasani et al., 2021]` | `(Bommasani et al., 2021)` |
+| Same author, same year, multiple papers | `[Smith, 2023a]`, `[Smith, 2023b]` | `(Smith, 2023a)`, `(Smith, 2023b)` |
 
-If Stage 2 used numeric citations (`[1]`, `[2]`), match Stage 2's choice instead. Consistency with Stage 2 outweighs personal preference.
+In body prose, the markers appear inline with the sentence: `The SENSEI framework [Sancaktar et al., 2025] distills…`, never `The SENSEI framework (Sancaktar et al., 2025) distills…`.
+
+The square-bracket form is what the LaTeX dispatch (`\citep{author_year}` conversion) and the `references.bib` mapping expect, and it matches the `[CITATION NEEDED]` placeholder shape so the Stage 9 critic can grep for citation presence with a single regex (`\[`).
+
+**Exception — numeric citations.** If `stage2_literature_surveyor.md` itself used numeric form (`[1]`, `[2]`, …), match Stage 2's choice instead. Consistency with Stage 2 outweighs personal preference. **No other exception exists**; do not switch to parentheses because they "look more natural" or because a target venue uses them — the dispatch step in `paper_writer` Step 9 handles per-venue conversion downstream.
 
 ## References Section
 
@@ -78,6 +82,8 @@ Rules:
 4. **Drop unreachable refs.** If you cited a paper inline but cannot find it in Stage 2, REMOVE the inline citation. Do not fabricate a reference entry.
 5. **Mirror the body.** Every entry in References must be cited at least once inline; conversely, every inline cite must have a References entry. The two sets are equal.
 6. **Coverage check.** Compute `|References| / |Stage 2 corpus|` and report it in `submit_result()`. Target ≥ 80 %.
+
+**Note — inline marker vs reference entry are different namespaces.** The parentheses around `(2017)` inside a References *entry* are part of standard bibliographic format (the year is in parentheses by convention), not an inline marker. The square-bracket rule above applies **only** to inline citations in body prose. Do not "fix" the `(YYYY)` inside a References entry to `[YYYY]`; the two layers serve different consumers (human reader vs `\citep{}` dispatcher) and are not interchangeable.
 
 ## Reporting
 
