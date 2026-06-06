@@ -263,7 +263,7 @@ Function: convince the reviewer you know where you stand and how you differ from
 
 **Structure** (mandatory):
 
-- Two to four **thematic sub-sections**, each named for a methodological lineage (e.g. *4.1 Curiosity-Driven Exploration*, *4.2 Graph-Based Methods*). Do not organise by year or list papers one per line.
+- Two to four **thematic sub-sections**, each named for a methodological lineage (e.g. *Curiosity-Driven Exploration*, *Graph-Based Methods*). Do not organise by year or list papers one per line. Sub-section *order* is your editorial choice; do not bake numbers like `4.1` into the heading text — see §9a / §9b for why.
 - Within each sub-section, three moves in order:
   1. What this line of work does
   2. Its common limitation
@@ -422,9 +422,16 @@ If `venue=` is missing for a `latex`, `pdf`, or `both` request, default to `iclr
 
 ### 9a. Markdown branch (default)
 
-1. `write()` the synthesised content to `stage8_paper_writer.md`.
-2. For each figure recorded in Step 1.5, include a standard markdown image reference inline at the appropriate section, e.g. `![Figure 1: Overview of the proposed framework.](stage4_framework_figure.png)`. Paths are relative to the workspace; do **not** copy the PNG anywhere — `stage8_paper_writer.md` lives in the same workspace directory as the figure file.
-3. Proceed to Step 10.
+1. `write()` the synthesised content to `stage8_paper_writer.md`, following the **heading rules** in step 2 below.
+2. **Markdown heading rules — no hand-written section numbers.**
+   The §4.2 "Section N — Title" naming is the *spec* for *which* sections must appear; the markdown heading itself carries only the **name**, never the number. Downstream consumers (pandoc → LaTeX, NeurIPS PDF builders, web renderers) auto-number headings — hand-written numbers stack on top and produce "0.1 1. Introduction" double-numbering. Use this hierarchy:
+   - `#` — the paper title from §4.2 Section 1. Exactly one `#` in the file.
+   - `##` — each top-level body section from §4.2 (Abstract, Introduction, Related Work, Methodology, …, Conclusion, References). The Abstract heading is the literal word `Abstract`, not `## 1. Abstract` and not `## Section 2 — Abstract`.
+   - `###` — sub-sections (Related Work themes, Methodology components, Results-per-RQ, etc.).
+   - Use heading **text only**: `## Introduction` ✓, `## 1. Introduction` ✗, `## Section 3 — Introduction` ✗. For sub-sections: `### Curiosity-Driven Exploration` ✓, `### 4.1 Curiosity-Driven Exploration` ✗.
+   - Apply the rule consistently to figures and tables in body text — write captions as prose ("Figure 1: …"), but never start a markdown heading line with a number.
+3. For each figure recorded in Step 1.5, include a standard markdown image reference inline at the appropriate section, e.g. `![Figure 1: Overview of the proposed framework.](stage4_framework_figure.png)`. Paths are relative to the workspace; do **not** copy the PNG anywhere — `stage8_paper_writer.md` lives in the same workspace directory as the figure file.
+4. Proceed to Step 10.
 
 ### 9b. LaTeX branch
 
@@ -434,7 +441,7 @@ If `venue=` is missing for a `latex`, `pdf`, or `both` request, default to `iclr
 4. Translate Markdown conventions to LaTeX as you write:
    - `[Author, Year]` inline cites → `\citep{author_year}` (with a corresponding `references.bib` entry)
    - `*italics*` → `\emph{italics}` (sparingly)
-   - Section headers → `\section{}`, `\subsection{}`
+   - Section headers → `\section{}`, `\subsection{}`. Pass the **name only** into the braces (`\section{Introduction}`, not `\section{1. Introduction}`) — LaTeX auto-numbers; a hand-written prefix produces "1 1. Introduction" double-numbering.
    - Tables → LaTeX `tabular` environments
    - Display equations → `\begin{equation}…\end{equation}`
    - `[TODO: missing from Stage N]` markers → keep them verbatim
@@ -456,7 +463,7 @@ If `venue=` is missing for a `latex`, `pdf`, or `both` request, default to `iclr
 
 ### 9c. Docx branch
 
-1. Build the section content as a Python dict `{header: body}` in your scratchpad — keys numbered like `"1. Introduction"`, `"2. Related Work"`, etc.
+1. Build the section content as a Python dict `{header: body}` in your scratchpad — keys numbered like `"1. Introduction"`, `"2. Related Work"`, etc. (Numbers in the dict keys are correct *only here*: `render_docx` writes each key verbatim as a heading and does not auto-number, so you supply the numbering. This is the opposite of the markdown / LaTeX branches.)
 2. For each figure recorded in Step 1.5, build a figure descriptor: `{"path": "<abs path to PNG>", "caption": "<caption from prior stage>", "section": "<exact key from sections>"}`. The `section` value must match a key in `sections` byte-for-byte (typically `"3. Methodology"` for `stage4_framework_figure.png`) — otherwise the figure is appended to the end of the body and a warning is recorded.
 3. Call `render_docx(title=…, authors=…, abstract=…, sections={…}, references=…, figures=[…], output_path="<workspace>/stage8_paper_writer.docx", venue=<venue or "generic">)`.
 4. The tool produces a two-column academic Word document with images embedded at the end of their target section. If `python-docx` is not installed in the OMC venv, the tool returns a clear error — in that case, fall back to writing Markdown and warn in `submit_result()` that docx output was unavailable.
