@@ -1,0 +1,147 @@
+% ============================================================================
+% AAAI-27 starter — clean main.tex for actually writing a paper.
+%
+% This file follows the strict "DO NOT CHANGE" preamble from the official
+% AAAI-27 author kit. The disallowed packages list there is enforced by
+% AAAI Press; do NOT add hyperref, geometry, fullpage, multicol, setspace,
+% indentfirst, etc. — submissions that touch the page geometry are desk
+% rejected. See official_template.tex for the full rules.
+% ============================================================================
+\documentclass[letterpaper]{article} % DO NOT CHANGE THIS
+\usepackage[submission]{aaai2027}  % DO NOT CHANGE THIS
+% Fonts (newtxtext, helvet, courier) are loaded by aaai2027.sty.
+% DO NOT add \usepackage{times}, \usepackage{helvet}, \usepackage{courier}.
+\usepackage[hyphens]{url}  % DO NOT CHANGE THIS
+\usepackage{graphicx} % DO NOT CHANGE THIS
+\urlstyle{rm} % DO NOT CHANGE THIS
+\def\UrlFont{\rm}  % DO NOT CHANGE THIS
+\usepackage{natbib}  % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\usepackage{caption} % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\frenchspacing  % DO NOT CHANGE THIS
+\setcounter{secnumdepth}{0} % AAAI Press style: unnumbered sections.
+
+% Recommended extras (safe under AAAI rules)
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+
+% Required PDF metadata block — keep exactly as below.
+\pdfinfo{
+/TemplateVersion (2027.1)
+}
+
+% ============================================================================
+% Title
+%
+% AAAI Press requires Mixed Case title capitalisation: capitalise nouns,
+% verbs, adverbs, adjectives (including both halves of hyphenated terms);
+% lowercase articles, conjunctions and short prepositions unless they
+% directly follow a colon or em dash.
+% ============================================================================
+\title{Your Paper Title Here}
+
+% ============================================================================
+% Authors
+%
+% For anonymous submission, leave this exactly as below — the [submission]
+% option to aaai2027 strips author info automatically, but you must still
+% put placeholder content.
+%
+% On acceptance, replace with the real author block and remove the
+% [submission] option from the \usepackage line at the top.
+% ============================================================================
+\author{
+    Anonymous Submission
+}
+\affiliations{
+    %
+}
+
+\begin{document}
+\maketitle
+
+% ============================================================================
+\begin{abstract}
+% Abstract is ~150-200 words. State problem, gap, contribution, headline
+% result. Avoid vague "we propose" — name what is specifically new.
+Replace this paragraph with your abstract.
+\end{abstract}
+
+% ============================================================================
+\section{Introduction}
+
+Motivate the problem in one paragraph. State the gap in prior work in the
+next. Then list contributions explicitly:
+
+\begin{itemize}
+    \item Contribution 1 --- be specific.
+    \item Contribution 2.
+    \item Contribution 3.
+\end{itemize}
+
+Close with a paragraph on paper organisation.
+
+% ============================================================================
+\section{Related Work}
+
+Group related work by theme, not by venue. For each closest paper, state
+explicitly how this work differs.
+
+% ============================================================================
+\section{Method}
+
+State assumptions upfront. Define notation on first use.
+
+% ============================================================================
+\section{Experiments}
+
+\subsection{Setup}
+Datasets, baselines, metrics, hardware, hyperparameters, random seeds.
+
+\subsection{Main Results}
+\begin{table}[t]
+\centering
+\caption{Main results. Best in \textbf{bold}.}
+\label{tab:main}
+\begin{tabular}{lcc}
+\toprule
+Method & Metric A $\uparrow$ & Metric B $\downarrow$ \\
+\midrule
+Baseline 1 & 65.4 & 0.42 \\
+Baseline 2 & 67.1 & 0.39 \\
+\textbf{Ours} & \textbf{72.3} & \textbf{0.31} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ablations}
+One ablation per contribution claim in the introduction.
+
+% Example figure:
+% \begin{figure}[t]
+% \centering
+% \includegraphics[width=0.9\linewidth]{figures/teaser.pdf}
+% \caption{One-line caption that stands alone.}
+% \label{fig:teaser}
+% \end{figure}
+
+% ============================================================================
+\section{Discussion}
+
+What did we learn? Where does the method break? Honest limitations belong
+here.
+
+% ============================================================================
+\section{Conclusion}
+
+Restate the contribution (no inflation). Future work should be specific.
+
+% ============================================================================
+% Bibliography
+%
+% AAAI-27 ships its own bib style (aaai2027.bst); do not change it.
+% ============================================================================
+\bibliographystyle{aaai2027}
+\bibliography{references}
+
+\end{document}

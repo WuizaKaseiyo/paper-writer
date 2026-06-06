@@ -41,6 +41,12 @@ for camera-ready / formatting-instruction packages:
   neurips2026/checklist.tex          — NeurIPS 2026 organizing committee
   neurips2026/official_template.tex  — NeurIPS 2026 organizing committee
 
+  aaai2027/aaai2027.sty              — AAAI-27 author kit (AAAI Press)
+  aaai2027/aaai2027.bst              — AAAI-27 author kit (AAAI Press)
+  aaai2027/references.bib            — derived from aaai2027.bib (AAAI Press)
+  aaai2027/official_template.tex     — derived from AAAI-27 author kit
+                                       AnonymousSubmission2027.tex (AAAI Press)
+
 These remain under their original authors' terms. The current redistribution
 is purely for the convenience of paper authors submitting to these venues.
 If you are an organizer and want a file removed or attributed differently,

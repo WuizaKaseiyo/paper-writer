@@ -53,7 +53,7 @@ personality_tags:
 # for multi-format output dispatch. The base markdown path uses zero custom
 # tools — these are only invoked when the task requests latex / docx / pdf.
 tools:
-  - fetch_latex_template     # copy bundled ICLR/NeurIPS venue template (offline, vendored in tool dir)
+  - fetch_latex_template     # copy bundled ICLR/NeurIPS/AAAI venue template (offline, vendored in tool dir)
   - render_docx              # python-docx → academic .docx (two-column, Times 11pt)
   - compile_latex            # host TeX (latexmk/pdflatex) → compile main.tex to PDF
 

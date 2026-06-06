@@ -1,8 +1,8 @@
 """fetch_latex_template — copy a bundled venue template into a destination dir.
 
-Self-contained LangChain @tool using only stdlib + langchain_core. The ICLR
-and NeurIPS templates are vendored into this tool's `templates/` directory, so
-this runs fully offline: no network, no `git`, no clone cache.
+Self-contained LangChain @tool using only stdlib + langchain_core. The ICLR,
+NeurIPS and AAAI templates are vendored into this tool's `templates/`
+directory, so this runs fully offline: no network, no `git`, no clone cache.
 
 When called from inside a Stage 8 task, it copies the requested venue
 subdirectory into <dest_dir> so the LLM can overwrite main.tex with the
@@ -21,7 +21,7 @@ from typing import Any
 
 from langchain_core.tools import tool
 
-VALID_VENUES = ("iclr2026", "neurips2026")
+VALID_VENUES = ("iclr2026", "neurips2026", "aaai2027")
 
 # Vendored templates live next to this module: tools/fetch_latex_template/templates/<venue>/
 _TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
@@ -47,7 +47,7 @@ def fetch_latex_template(
     vendored inside this tool.
 
     Args:
-        venue: One of "iclr2026" or "neurips2026".
+        venue: One of "iclr2026", "neurips2026" or "aaai2027".
         dest_dir: Where to place the copied template (typically the project
             workspace, e.g. "/path/to/project/stage8_paper").
 

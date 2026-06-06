@@ -1,6 +1,6 @@
 ---
 name: fetch_latex_template
-description: Copy a vendored ICLR/NeurIPS venue template into a destination directory so the LLM can fill in main.tex. Returns the path to main.tex plus the list of supporting files. Runs fully offline — templates are bundled in this tool's templates/ dir.
+description: Copy a vendored ICLR/NeurIPS/AAAI venue template into a destination directory so the LLM can fill in main.tex. Returns the path to main.tex plus the list of supporting files. Runs fully offline — templates are bundled in this tool's templates/ dir.
 ---
 
 # fetch_latex_template
@@ -8,7 +8,7 @@ description: Copy a vendored ICLR/NeurIPS venue template into a destination dire
 When you need to produce LaTeX output (because the task specifies
 `output_format=latex`), call this first. It does two things:
 
-1. Copies the chosen venue subdir (`iclr2026/` or `neurips2026/`) from the
+1. Copies the chosen venue subdir (`iclr2026/`, `neurips2026/` or `aaai2027/`) from the
    templates vendored inside this tool into your destination
 2. Returns the path to `main.tex` so you can `write()` your synthesized paper into it
 
@@ -19,7 +19,7 @@ this needs no network and no `git`.
 
 | Arg | Type | Default | Purpose |
 |-----|------|---------|---------|
-| `venue` | str | (required) | `"iclr2026"` or `"neurips2026"` |
+| `venue` | str | (required) | `"iclr2026"`, `"neurips2026"` or `"aaai2027"` |
 | `dest_dir` | str | (required) | Where to materialize the project — typically `<project_workspace>/stage8_paper` |
 
 ## Returns

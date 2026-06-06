@@ -413,6 +413,7 @@ Parse the task description for an `output_format` directive. The grammar is inte
 - `output_format=markdown` (or no directive at all) → **default behaviour** — single Markdown file
 - `output_format=latex venue=iclr2026` → ICLR 2026 LaTeX project (source only, not compiled)
 - `output_format=latex venue=neurips2026` → NeurIPS 2026 LaTeX project (source only, not compiled)
+- `output_format=latex venue=aaai2027` → AAAI-27 LaTeX project (source only, not compiled)
 - `output_format=docx` → academic Word document
 - `output_format=pdf venue=<venue>` → LaTeX project compiled to PDF
 - `output_format=both venue=<venue>` → emit Markdown AND LaTeX (skip docx and pdf unless explicitly requested)

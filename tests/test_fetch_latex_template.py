@@ -58,6 +58,14 @@ def test_neurips_ships_conference_style(tmp_path):
     assert (dest / "neurips_2026.sty").exists()
 
 
+def test_aaai_ships_conference_style(tmp_path):
+    dest = tmp_path / "aaai"
+    result = fetch_latex_template.invoke({"venue": "aaai2027", "dest_dir": str(dest)})
+    assert result["status"] == "ok"
+    assert (dest / "aaai2027.sty").exists()
+    assert (dest / "aaai2027.bst").exists()
+
+
 def test_dest_created_if_missing(tmp_path):
     dest = tmp_path / "a" / "b" / "c" / "stage8_paper"
     result = fetch_latex_template.invoke({"venue": "iclr2026", "dest_dir": str(dest)})
